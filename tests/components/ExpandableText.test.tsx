@@ -14,7 +14,7 @@ describe("ExpandableText", () => {
 
     expect(screen.getByText(text)).toBeInTheDocument();
     expect(
-      screen.queryByRole("button", { name: /\b(show less|show more)\b/i })
+      screen.queryByRole("button", { name: /\b(show less|show more)\b/i }),
     ).not.toBeInTheDocument();
   });
 
@@ -34,7 +34,20 @@ describe("ExpandableText", () => {
 
     const screenText = screen.getByRole("article");
     expect(screenText.textContent).toHaveLength(longText.length);
-    expect(screenText).not.toHaveTextContent(/\.\.\.$/);
+    expect(screenText).not.toHaveTextContent(/\.\.\.$/); // or you can assert using the truncatedText itself, which is required length and contains required characters
     expect(button).toHaveTextContent(/show less/i);
+  });
+
+  it("should collapse text and change button text when 'Show Less' button is clicked", async () => {
+    render(<ExpandableText text={longText} />);
+    const user = userEvent.setup();
+    const showMoreButton = screen.getByRole("button", { name: /more/i });
+    await user.click(showMoreButton);
+
+    const showLessButton = screen.getByRole("button", { name: /less/i });
+    await user.click(showLessButton);
+
+    expect(screen.getByText(truncatedText)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /more/i })).toBeInTheDocument();
   });
 });
