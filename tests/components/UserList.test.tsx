@@ -21,7 +21,6 @@ describe("UserList", () => {
     users.forEach((user) => {
       const userNameLink = screen.getByRole("link", { name: user.name });
 
-      expect(userNameLink).toBeInTheDocument();
       expect(userNameLink).toHaveAttribute("href", `/users/${user.id}`);
     });
   });
