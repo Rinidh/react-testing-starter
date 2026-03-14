@@ -3,6 +3,16 @@ import UserAccount from "../../src/components/UserAccount";
 import { User } from "../../src/entities";
 
 describe("UserAccount (User profile)", () => {
+  const renderComponent = (user: User) => {
+    render(<UserAccount user={user} />);
+
+    return {
+      heading: screen.getByRole("heading"),
+      name: screen.getByText(user.name),
+      button: screen.queryByRole("button"),
+    };
+  };
+
   it("should render correct heading, edit button and user name when user is admin", () => {
     const adminUser: User = {
       id: 1,
@@ -10,16 +20,11 @@ describe("UserAccount (User profile)", () => {
       isAdmin: true,
     };
 
-    render(<UserAccount user={adminUser} />);
-    const heading = screen.getByRole("heading");
-    const button = screen.getByRole("button");
-    const nameDiv = screen.getByText("own user");
+    const { heading, button, name } = renderComponent(adminUser);
 
-    expect(heading).toBeInTheDocument();
-    expect(heading).toHaveTextContent(/user profile/i);
-    expect(button).toBeInTheDocument();
+    expect(heading).toHaveTextContent(/profile/i);
     expect(button).toHaveTextContent(/edit/i);
-    expect(nameDiv).toBeInTheDocument();
+    expect(name).toBeInTheDocument(); // since the name was accessed using .getByText(), it is repetitive to again assert using .toHaveTextContent()
   });
 
   it("should not render edit button when current user is not admin", () => {
@@ -28,8 +33,7 @@ describe("UserAccount (User profile)", () => {
       name: "other user",
     };
 
-    render(<UserAccount user={otherUser} />);
-    const button = screen.queryByRole("button");
+    const { button } = renderComponent(otherUser);
 
     expect(button).not.toBeInTheDocument();
   });

@@ -25,3 +25,5 @@ describe("UserList", () => {
     });
   });
 });
+
+// may not simplify and extract out a `renderComponent` function for UserList as that would introduce complexity instead of simplicity
