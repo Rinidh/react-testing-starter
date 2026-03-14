@@ -2,21 +2,24 @@ import { render, screen } from "@testing-library/react";
 import Greet from "../../src/components/Greet";
 
 describe("Greet", () => {
+  const renderComponent = (name?: string) => {
+    render(<Greet name={name} />);
+
+    return {
+      heading: screen.queryByRole("heading"),
+      button: screen.queryByRole("button"),
+    };
+  };
+
   it("should render h1 with greet message and name when name is provided", () => {
-    render(<Greet name="Radhe Krishna" />);
+    const { heading } = renderComponent("radhe krishna");
 
-    const elem = screen.getByRole("heading");
-
-    expect(elem).toBeInTheDocument();
-    expect(elem).toHaveTextContent(/radhe krishna/i);
+    expect(heading).toHaveTextContent(/radhe krishna/i);
   });
 
   it("should render login button when name is not provided", () => {
-    render(<Greet />);
+    const { button } = renderComponent();
 
-    const elem = screen.getByRole("button");
-
-    expect(elem).toBeInTheDocument();
-    expect(elem).toHaveTextContent(/login/i);
+    expect(button).toHaveTextContent(/login/i);
   });
 });
